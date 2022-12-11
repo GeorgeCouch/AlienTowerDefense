@@ -8,12 +8,6 @@ public class AdjustTileMap : MonoBehaviour
 {
     // Store Tile Map
     public GameObject tileMap;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
 
     // Update is called once per frame
     void Update()
