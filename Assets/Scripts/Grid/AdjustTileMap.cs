@@ -25,7 +25,7 @@ public class AdjustTileMap : MonoBehaviour
         int children = tileMap.transform.childCount;
         for (int i = 0; i < children; i++)
         {
-            // Skip 0 index
+            // Skip 0 index (tileMap object is first child)
             if (i != 0)
             {
                 tileMap.transform.GetChild(i).transform.localScale = new Vector3(gridSystemComponent.gridPointDistance, 1, gridSystemComponent.gridPointDistance);
