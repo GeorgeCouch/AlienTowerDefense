@@ -21,7 +21,8 @@ public class GameManager : MonoBehaviour
     #endregion
 
     // Store unit layer and game object
-    public LayerMask draggable;
+    [SerializeField]
+    private LayerMask draggable;
     GameObject draggingUnit;
 
     // Bool based on if unit is clicked

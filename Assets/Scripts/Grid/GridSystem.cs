@@ -5,13 +5,17 @@ using UnityEngine;
 public class GridSystem : MonoBehaviour
 {
     // Grid Point GameObject for spawning
-    public GameObject gridPoint;
+    [SerializeField]
+    private GameObject gridPoint;
 
     // Parameters for how many to spawn and the distance between them (Only works if Width even and Height odd)
     [Header("Width: Even, Height: Odd")]
-    public int gridWidth;
-    public int gridHeight;
-    public float gridPointDistance;
+    [SerializeField]
+    private int gridWidth;
+    [SerializeField]
+    private int gridHeight;
+    [SerializeField]
+    private float gridPointDistance;
 
     // Holds position for where to spawn next gridPoint
     private Vector3 spawnLocation;
@@ -20,7 +24,7 @@ public class GridSystem : MonoBehaviour
     private Vector3 originSpawnLocation;
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         spawnLocation = transform.position;
         // Offset Spawn origin to top left so that this transform will be in center
@@ -32,7 +36,7 @@ public class GridSystem : MonoBehaviour
     }
 
     // Spawns grid based on width and height and adds offsets based on gridPointDistance
-    void SpawnGrid()
+    private void SpawnGrid()
     {
         // Loop through height
         for (int i = 0; i < gridHeight; i++)
@@ -58,5 +62,10 @@ public class GridSystem : MonoBehaviour
                 spawnLocation = xOffset;
             }
         }
+    }
+
+    public float getGridPointDistance()
+    {
+        return gridPointDistance;
     }
 }

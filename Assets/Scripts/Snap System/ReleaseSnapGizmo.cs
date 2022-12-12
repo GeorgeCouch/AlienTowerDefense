@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class ReleaseSnapGizmo : MonoBehaviour
 {
-    public float gizmoRadius;
-    public float floorHeight;
-    bool dragging;
+    [SerializeField]
+    private float gizmoRadius;
+    [SerializeField]
+    private float floorHeight;
+    private bool dragging;
 
     // Draw Sphere on same y as grid points if object is being dragged
     private void OnDrawGizmos()

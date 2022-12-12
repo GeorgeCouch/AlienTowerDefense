@@ -7,17 +7,30 @@ public class ReleaseSnap : MonoBehaviour
     [Header("Game Object Must Use Capsule Collider")]
 
     // Size of sphere cast and what it's looking for
-    public float castRadius;
+    [SerializeField]
+    private float castRadius;
     // Used to offset y position so objects snap above ground
-    public float floorHeight;
+    [SerializeField]
+    private float floorHeight;
     // LayerMasks for gathering info on specific objects
-    public LayerMask avaliableGridPoint;
-    public LayerMask Terrain;
+    [SerializeField]
+    private LayerMask avaliableGridPoint;
+    [SerializeField]
+    private LayerMask Terrain;
 
     // Stores gridPoint that object is sitting on
-    GameObject currentGridPoint = null;
+    private GameObject currentGridPoint = null;
     // Null var for calculating distance to center of sphere cast
-    Transform minDistancePosition = null;
+    private Transform minDistancePosition = null;
+
+    // Vars for repositioning if gridSnap fails
+    private Vector3 originPoint;
+    private GameObject attemptingGridpoint;
+
+    private void Start()
+    {
+        originPoint = transform.position;
+    }
 
     #region Drag Positiong Methods Called From Game Manager
     public void DragObject()
@@ -50,19 +63,19 @@ public class ReleaseSnap : MonoBehaviour
 
     public void GridSnap()
     {
-        // Reset vars
+        // Reset
         minDistancePosition = null;
-        // Check if object on gridPoint
-        if (currentGridPoint != null)
-        {
-            // Change Layer to available so other objects can be dragged onto it
-            currentGridPoint.layer = 6;
-            currentGridPoint = null;
-        }
 
         // Return array of colliders on target layer hit by sphere cast, cast on same value as gridpoints by subtracting floor height and subtract 1 to offset transform.up direction
         RaycastHit[] hits = Physics.SphereCastAll(new Vector3(transform.position.x, (transform.position.y - floorHeight) - 1, transform.position.z),
             castRadius, transform.up, castRadius / 2, avaliableGridPoint);
+
+        // Expand range if no available gridPoints found
+        if (hits.Length == 0)
+        {
+            hits = Physics.SphereCastAll(new Vector3(transform.position.x, (transform.position.y - floorHeight) - 1, transform.position.z),
+                castRadius * 4, transform.up, (castRadius / 2) * 4, avaliableGridPoint);
+        }
 
         // Loop through colliders found by sphere cast
         for (int i = 0; i < hits.Length; i++)
@@ -78,21 +91,39 @@ public class ReleaseSnap : MonoBehaviour
                 {
                     minDistancePosition = hits[i].transform;
                     // get new gridPoint that object might move to
-                    currentGridPoint = hits[i].transform.gameObject;
+                    attemptingGridpoint = hits[i].transform.gameObject;
                 }
             }
             // if minDistancePosition does not exist (first loop)
             else
             {
                 minDistancePosition = hits[i].transform;
-                currentGridPoint = hits[i].transform.gameObject;
+                attemptingGridpoint = hits[i].transform.gameObject;
             }
         }
 
-        // Move object to closest gridPoint and position above ground
-        transform.position = new Vector3(minDistancePosition.position.x, minDistancePosition.position.y + floorHeight, minDistancePosition.position.z);
-        // Change Layer to occupied so no other objects can be dragged onto it
-        currentGridPoint.layer = 7;
+        if (minDistancePosition != null)
+        {
+            // Move object to closest gridPoint and position above ground
+            transform.position = new Vector3(minDistancePosition.position.x, minDistancePosition.position.y + floorHeight, minDistancePosition.position.z);
+            // Check if previous gridPoint exists
+            if (currentGridPoint != null)
+            {
+                // Change Layer to available so other objects can be dragged onto it
+                currentGridPoint.layer = 6;
+            }
+            // Reset currentGridPoint
+            currentGridPoint = attemptingGridpoint;
+            // Change Layer to occupied so no other objects can be dragged onto it
+            currentGridPoint.layer = 7;
+            // Reset origin so that if next positioning fails object will go back here
+            originPoint = transform.position;
+        }
+        else
+        {
+            // If all fails, go back to previous position
+            transform.position = originPoint;
+        }
     }
 
     public void AdjustModelHeightOnRelease()

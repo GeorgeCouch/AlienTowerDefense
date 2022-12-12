@@ -7,10 +7,11 @@ using UnityEngine;
 public class AdjustTileMap : MonoBehaviour
 {
     // Store Tile Map
-    public GameObject tileMap;
+    [SerializeField]
+    private GameObject tileMap;
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         // Stop here if Playing in Editor
         if (Application.isPlaying)
@@ -19,8 +20,8 @@ public class AdjustTileMap : MonoBehaviour
         }
         GridSystem gridSystemComponent = GetComponent<GridSystem>();
         // Shift tileMap and adjust cell size to custom grid system
-        tileMap.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + (gridSystemComponent.gridPointDistance / 2));
-        tileMap.GetComponent<Grid>().cellSize = new Vector3(gridSystemComponent.gridPointDistance, gridSystemComponent.gridPointDistance, 0);
+        tileMap.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + (gridSystemComponent.getGridPointDistance() / 2));
+        tileMap.GetComponent<Grid>().cellSize = new Vector3(gridSystemComponent.getGridPointDistance(), gridSystemComponent.getGridPointDistance(), 0);
         // Loop through tileMap childrent and adjust scales to fit cells
         int children = tileMap.transform.childCount;
         for (int i = 0; i < children; i++)
@@ -28,7 +29,7 @@ public class AdjustTileMap : MonoBehaviour
             // Skip 0 index (tileMap object is first child)
             if (i != 0)
             {
-                tileMap.transform.GetChild(i).transform.localScale = new Vector3(gridSystemComponent.gridPointDistance, 1, gridSystemComponent.gridPointDistance);
+                tileMap.transform.GetChild(i).transform.localScale = new Vector3(gridSystemComponent.getGridPointDistance(), 1, gridSystemComponent.getGridPointDistance());
             }
         }
     }

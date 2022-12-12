@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class GridPointHolderGizmo : MonoBehaviour
 {
-    public float holderGizmoSphereRadius = 0.25f;
+    [SerializeField]
+    private float holderGizmoSphereRadius = 0.25f;
 
     private void OnDrawGizmos()
     {
