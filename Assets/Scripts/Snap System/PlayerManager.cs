@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class PlayerManager : MonoBehaviour
 {
     #region Make Singleton
-    private static GameManager instance;
-    public static GameManager Instance
+    private static PlayerManager instance;
+    public static PlayerManager Instance
     {
         get
         {
@@ -23,10 +23,10 @@ public class GameManager : MonoBehaviour
     // Store unit layer and game object
     [SerializeField]
     private LayerMask draggable;
-    GameObject draggingUnit;
+    private GameObject draggingUnit;
 
     // Bool based on if unit is clicked
-    bool unitBeingDragged;
+    private bool unitBeingDragged;
 
     private void Update()
     {
@@ -45,7 +45,7 @@ public class GameManager : MonoBehaviour
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, draggable))
             {
                 // Store draggable object and set bool if found
-                draggingUnit = hit.transform.gameObject;
+                draggingUnit = hit.transform.parent.gameObject;
                 unitBeingDragged = true;
             }
         }

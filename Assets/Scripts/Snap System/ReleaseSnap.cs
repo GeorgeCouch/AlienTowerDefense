@@ -42,7 +42,7 @@ public class ReleaseSnap : MonoBehaviour
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, Terrain)) 
         { 
             // Get Y Offset
-            float yCoord = hit.point.y + GetComponent<CapsuleCollider>().bounds.extents.y;
+            float yCoord = hit.point.y + transform.GetChild(0).GetComponent<CapsuleCollider>().bounds.extents.y;
             // Position parent at hit x, floorHeight, and hit z
             transform.position = new Vector3(hit.point.x, floorHeight, hit.point.z);
             // Position child at hit x, y + offset, and z
@@ -52,7 +52,7 @@ public class ReleaseSnap : MonoBehaviour
         else
         {
             // Add z offset
-            float zCoord = Camera.main.WorldToScreenPoint(transform.position).z + GetComponent<CapsuleCollider>().bounds.extents.y;
+            float zCoord = Camera.main.WorldToScreenPoint(transform.position).z + transform.GetChild(0).GetComponent<CapsuleCollider>().bounds.extents.y;
             // Get exact mouse position
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, zCoord));
             // Positioning
@@ -129,14 +129,14 @@ public class ReleaseSnap : MonoBehaviour
     public void AdjustModelHeightOnRelease()
     {
         // Cast ray from top of capsule model
-        Ray ray = new Ray(new Vector3(transform.GetChild(0).position.x, transform.GetChild(0).position.y + GetComponent<CapsuleCollider>().bounds.extents.y,
+        Ray ray = new Ray(new Vector3(transform.GetChild(0).position.x, transform.GetChild(0).position.y + transform.GetChild(0).GetComponent<CapsuleCollider>().bounds.extents.y,
             transform.GetChild(0).position.z), Vector3.down);
         RaycastHit hit;
         // Check if ray hit terrain layer
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, Terrain))
         {
             // Sit on y just below capsule
-            float capsuleDist = GetComponent<CapsuleCollider>().bounds.extents.y * 2;
+            float capsuleDist = transform.GetChild(0).GetComponent<CapsuleCollider>().bounds.extents.y * 2;
             if (hit.distance > capsuleDist + 0.1)
             {
                 transform.GetChild(0).position -= new Vector3(0, hit.distance - capsuleDist, 0);
